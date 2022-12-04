@@ -7,9 +7,16 @@ namespace EventCampaignManagement.Helpers;
 
 public class APIHelper
 {
-    public static Dictionary<string, GPSCoordinate> GetAllUSStateCordinatesFromCache()
+    /// <summary>
+    /// Get the cities from a file
+    /// </summary>
+    /// <param name="cityNames"></param>
+    /// <returns></returns>
+    public static Dictionary<string, GPSCoordinate> GetAllUSStateCordinatesFromCache(List<string> cityNames)
     {
         var citiesPath = Path.Combine("Files", "USCities.json");
+        
+        //Check for file existence
         if (!File.Exists(citiesPath))
             return new Dictionary<string, GPSCoordinate>();
         
@@ -18,8 +25,11 @@ public class APIHelper
             return new Dictionary<string, GPSCoordinate>();
         
         var result = new Dictionary<string, GPSCoordinate>();
-        cities.ForEach(_=> result.Add(_.Name, new GPSCoordinate(_.Latitude, _.Longitude)));
-
+        //Filter and Deserialize
+        
+        //Apply distinct to remove duplicate keys which will cause a crash. 
+        //Get only the needed cities as performance measure. Needed cities are determined by availability in any event.
+        cities.Where(__=> cityNames.Contains(__.Name)).DistinctBy(d=>d.Name).ToList().ForEach(_=>  result.Add(_.Name, new GPSCoordinate(_.Latitude, _.Longitude)));
         return result;
     }
 

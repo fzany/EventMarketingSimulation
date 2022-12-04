@@ -8,7 +8,9 @@ public class Converters
     {
         return Math.Abs(eventDate.DayOfYear - birthDate.DayOfYear) <= Constants.DateCloseRange || 
                //handle for next birthday. 
-               Math.Abs(eventDate.DayOfYear - birthDate.AddYears(1).DayOfYear) <= Constants.DateCloseRange;
+               Math.Abs(eventDate.DayOfYear - birthDate.AddYears(1).DayOfYear) <= Constants.DateCloseRange ||
+               //Or the birthday is happening on the same month
+               eventDate.Month == birthDate.Month;
     }
     
     public static bool IsDistancesClose(GPSCoordinate eventCity, GPSCoordinate customerCity)

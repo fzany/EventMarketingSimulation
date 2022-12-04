@@ -1,15 +1,16 @@
 using System.Text.Json.Serialization;
+using Newtonsoft.Json;
 
 namespace EventCampaignManagement.Models;
 
 public class CityParser
 {
-    [JsonPropertyName("lat")]
+    [JsonProperty("lat")]
     public double Latitude { get; set; }
     
-    [JsonPropertyName("lng")]
+    [JsonProperty("lng")]
     public double Longitude { get; set; }
     
-    [JsonPropertyName("city")]
+    [JsonProperty("city")]
     public string Name { get; set; }
 }

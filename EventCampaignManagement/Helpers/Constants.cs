@@ -5,7 +5,7 @@ public class Constants
     /// <summary>
     /// Date close range in days
     /// </summary>
-    public const int DateCloseRange = 10;
+    public const int DateCloseRange = 30;
 
     /// <summary>
     /// Distance Closeness Range in Kilometers

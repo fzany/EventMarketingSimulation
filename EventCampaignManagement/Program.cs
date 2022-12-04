@@ -61,18 +61,18 @@ cityNames = cityNames.Distinct().ToList();
 
 //Populate US Locations from API.
 (bool, Dictionary<string, GPSCoordinate>) locationResult = APIHelper.GetAllUSStateCordinatesFromAPI();
+if (locationResult.Item1)
+{
+    AllUsCitiesStore = locationResult.Item2;
+}
 //Populate the static city store if the list is blank OR the API call fails. 
 if (!AllUsCitiesStore.Any())
 {
-    AllUsCitiesStore = APIHelper.GetAllUSStateCordinatesFromCache();
+    //Pass the cities for filter. 
+    AllUsCitiesStore = APIHelper.GetAllUSStateCordinatesFromCache(cityNames);
 }
 
-//Get only the needed cities as performance measure. Needed cities are determined by availability in any event.
-var allUsCitiesStoreFiltered = AllUsCitiesStore.Where(d => cityNames.Contains(d.Key));
-
-
 //for each unique city, get distance with Customer
-var allUsCitiesStore = allUsCitiesStoreFiltered as KeyValuePair<string, GPSCoordinate>[] ?? allUsCitiesStoreFiltered.ToArray();
 cityNames.ForEach(d =>
 {
     if (d == customer.City)
@@ -82,8 +82,8 @@ cityNames.ForEach(d =>
     else
     {
         DistanceComparerStore.Add(new Tuple<string, string>(d,customer.City), Converters.DistanceBetweenCoordinates(
-            allUsCitiesStore.FirstOrDefault(f => f.Key == d).Value,
-            allUsCitiesStore.FirstOrDefault(f => f.Key == customer.City).Value));
+            AllUsCitiesStore.FirstOrDefault(f => f.Key == d).Value,
+            AllUsCitiesStore.FirstOrDefault(f => f.Key == customer.City).Value));
     }
 });
 
@@ -112,6 +112,7 @@ engine.SendCustomerNotifications();
 
 #endregion
 
+Console.ReadKey();
 
 
 
